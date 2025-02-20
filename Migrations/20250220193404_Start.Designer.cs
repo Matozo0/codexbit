@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CodexBit.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    [Migration("20250220013003_start")]
-    partial class start
+    [Migration("20250220193404_Start")]
+    partial class Start
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

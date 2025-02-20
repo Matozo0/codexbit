@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using CodexBit.Models;
 using CodexBit.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Sqlite.Diagnostics.Internal;
 
 namespace CodexBit.Controllers;
 
@@ -35,11 +37,36 @@ public class PostController : Controller
         // Pega o post com id fornecido
         var post = _context.Posts
             .FirstOrDefault(post => post.Id == id);
-            
+
         // Caso não exista o post retorna NotFound
         if (post == null)
             return NotFound();
 
         return View(post);
+    }
+
+    // Pagina de criação do post
+    [HttpGet("create")]
+    public IActionResult Create()
+    {
+        return View(new PostModel());
+    }
+
+    // Endpoint do formulário de criação do post
+    [HttpPost("create")]
+    public IActionResult Create(PostModel post)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+
+        post.UpdatedAt = post.CreatedAt;
+
+        _context.Add(post);
+        _context.SaveChanges();
+        _logger.LogInformation($"Novo post de id: {post.Id} criado");
+
+        return RedirectToAction("Index");
     }
 }

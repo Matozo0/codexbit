@@ -1,0 +1,51 @@
+﻿@using Markdig
+@model CodexBit.Models.PostModel
+@{
+    ViewData["Title"] = @Model.Title;
+}
+
+<head>
+    <script></script>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#scrollspy-navbar">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h1>@Model.Title</h1>
+    </div>
+
+    <p><i>Atualizado em: @Model.UpdatedAt -
+            @{
+                var timeDiff = DateTime.UtcNow - Model.UpdatedAt;
+                var hoursAgo = (int)timeDiff.TotalHours;
+                var daysAgo = (int)timeDiff.TotalDays;
+                var minutesAgo = (int)timeDiff.TotalMinutes;
+                string timeString;
+
+                if (daysAgo > 0)
+                {
+                    timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
+                }
+                else if (hoursAgo > 0)
+                {
+                    timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
+                }
+                else if (minutesAgo > 5)
+                {
+                    timeString = $"Há {minutesAgo} minutos";
+                }
+                else
+                {
+                    timeString = "Agora mesmo";
+                }
+            }
+        </i></p>
+
+    <div class="row">
+        <div class="col-9 border-end pe-4 border-end">
+            <div class="post-content">
+                @Html.Raw(Markdown.ToHtml(Model.ContentMarkdown))
+            </div>
+        </div>
+    </div>
+    <a href="/">Voltar</a>
+</body>

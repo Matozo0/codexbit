@@ -1,0 +1,86 @@
+﻿@model CodexBit.Models.PostModel
+
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const easyMDE = new EasyMDE({
+                element: document.getElementById("ContentMarkdown"),
+                spellChecker: false,
+                placeholder: "Escreva aqui seu conteúdo em Markdown...",
+                autosave: {
+                    enabled: true,
+                    uniqueId: "ContentMarkdownEditor",
+                    delay: 1000,
+                },
+                toolbar: [
+                    "bold", "italic", "heading", "|",
+                    "quote", "unordered-list", "ordered-list", "|",
+                    "link", "image", "|",
+                    "preview", "side-by-side", "fullscreen"
+                ],
+                initialValue: ""
+            });
+        });
+
+        // Validacao do form pelo Bootstrap
+        const forms = document.querySelectorAll('.needs-validation');
+
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    </script>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Criar Post</h1>
+
+        <form asp-action="Create" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="Title" class="form-label">Título</label>
+                <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title"
+                    placeholder="Digite o título do post" required />
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque o titulo.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="Description" class="form-label">Descrição</label>
+                <textarea class="form-control" id="Description" name="Description" rows="3"
+                    placeholder="Escreva uma breve descrição" required>@Model.Description</textarea>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque a descrição.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="ImageURL" class="form-label">URL da Imagem</label>
+                <input type="url" class="form-control" id="ImageURL" name="ImageURL" value="@Model.ImageURL"
+                    placeholder="Insira o link da imagem" required />
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque a imagem do post.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="ContentMarkdown" class="form-label">Conteúdo</label>
+                <textarea class="form-control" id="ContentMarkdown" name="ContentMarkdown" rows="10"
+                    placeholder="Escreva o conteúdo em Markdown">@Model.ContentMarkdown</textarea>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque o conteúdo do post.</div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Criar</button>
+            </div>
+        </form>
+    </div>
+</body>

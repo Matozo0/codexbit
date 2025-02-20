@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "CodexBit";
+}
+@model IEnumerable<PostModel>
+
+<head>
+    <style>
+        .post-card {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: rgba(0, 0, 0, 0.22) 0px 10px 10px;
+            transition: transform 0.2s;
+            align-items: flex-start;            
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+<div class="container mt-5">
+    <h1 class="mb-4">Ultimas noticias</h1>
+
+    <div class="posts">
+        @foreach (var post in Model)
+        {
+            <div class="post-card p-4" href="@post.Id">
+                <img src="@post.ImageURL" class="post-image" alt="Imagem do post">
+
+                <div class="post-content">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h3>@post.Title</h3>
+                    </div>
+
+                    <div class="text-muted mb-3">
+                        @{
+                            var timeDiff = DateTime.UtcNow - post.UpdatedAt;
+                            var hoursAgo = (int)timeDiff.TotalHours;
+                            var daysAgo = (int)timeDiff.TotalDays;
+                            var minutesAgo = (int)timeDiff.TotalMinutes;
+
+                            string timeString;
+                            if (daysAgo > 0)
+                            {
+                                timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
+                            }
+                            else if (hoursAgo > 0)
+                            {
+                                timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
+                            }
+                            else if (minutesAgo > 5)
+                            {
+                                timeString = $"Há {minutesAgo} minutos";
+                            }
+                            else
+                            {
+                                timeString = "Agora mesmo";
+                            }
+                        }
+                    </div>
+
+                    <p class="text-secondary">@post.Description</p>
+
+                    <a href="@post.Id" class="btn btn-outline-primary">Leia mais</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

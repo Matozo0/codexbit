@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CodexBit")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8af90ad5e6ddeb894965c308051e267102857b0b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+14362398af6369210453e26ac11427777b51481b")]
 [assembly: System.Reflection.AssemblyProductAttribute("CodexBit")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CodexBit")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
