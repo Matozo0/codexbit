@@ -18,6 +18,11 @@
         .post-card:hover {
             transform: translateY(-3px);
         }
+
+        .post-image {
+            max-width: 450px;
+            max-height: 300px;
+        }
     </style>
 </head>
 
@@ -27,7 +32,7 @@
     <div class="posts">
         @foreach (var post in Model)
         {
-            <div class="post-card p-4" href="@post.Id">
+            <div class="post-card p-4">
                 <img src="@post.ImageURL" class="post-image" alt="Imagem do post">
 
                 <div class="post-content">
@@ -60,6 +65,7 @@
                                 timeString = "Agora mesmo";
                             }
                         }
+                        @timeString
                     </div>
 
                     <p class="text-secondary">@post.Description</p>
