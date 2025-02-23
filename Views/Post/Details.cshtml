@@ -5,47 +5,84 @@
 }
 
 <head>
-    <script></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("pre").forEach(pre => {
+                const button = document.createElement("button");
+                button.textContent = "Copiar";
+                button.classList.add("copy-button", "btn", "btn-secondary", "bi", "bi-clipboard");
+
+                button.addEventListener("click", function () {
+                    const code = pre.querySelector("code").innerText;
+                    navigator.clipboard.writeText(code).then(() => {
+                        button.textContent = "Copiado!";
+                        button.classList.replace("bi-clipboard", "bi-check")
+                        setTimeout(() => button.textContent = "Copiar", 2000);
+                    }).catch(err => console.error("Erro ao copiar: ", err));
+                });
+
+                pre.style.position = "relative";
+                pre.appendChild(button);
+            });
+        });
+    </script>
+    <style>
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        pre {
+            border-radius: 10px;
+            background-color: lightgray;
+            padding: 10px;
+        }
+    </style>
 </head>
 
-<body data-bs-spy="scroll" data-bs-target="#scrollspy-navbar">
-    <div class="d-flex justify-content-between align-items-center mb-2">
+<body>
+    <div class="align-items-center pb-3 mt-3 mb-3 border-bottom">
         <h1>@Model.Title</h1>
+        
+        <p><i>Atualizado em: @Model.UpdatedAt -
+                @{
+                    var timeDiff = DateTime.UtcNow - Model.UpdatedAt;
+                    var hoursAgo = (int)timeDiff.TotalHours;
+                    var daysAgo = (int)timeDiff.TotalDays;
+                    var minutesAgo = (int)timeDiff.TotalMinutes;
+                    string timeString;
+
+                    if (daysAgo > 0)
+                    {
+                        timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
+                    }
+                    else if (hoursAgo > 0)
+                    {
+                        timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
+                    }
+                    else if (minutesAgo > 5)
+                    {
+                        timeString = $"Há {minutesAgo} minutos";
+                    }
+                    else
+                    {
+                        timeString = "Agora mesmo";
+                    }
+                }
+            </i></p>
     </div>
 
-    <p><i>Atualizado em: @Model.UpdatedAt -
-            @{
-                var timeDiff = DateTime.UtcNow - Model.UpdatedAt;
-                var hoursAgo = (int)timeDiff.TotalHours;
-                var daysAgo = (int)timeDiff.TotalDays;
-                var minutesAgo = (int)timeDiff.TotalMinutes;
-                string timeString;
-
-                if (daysAgo > 0)
-                {
-                    timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
-                }
-                else if (hoursAgo > 0)
-                {
-                    timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
-                }
-                else if (minutesAgo > 5)
-                {
-                    timeString = $"Há {minutesAgo} minutos";
-                }
-                else
-                {
-                    timeString = "Agora mesmo";
-                }
-            }
-        </i></p>
-
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-9 border-end pe-4 border-end">
             <div class="post-content">
                 @Html.Raw(Markdown.ToHtml(Model.ContentMarkdown))
             </div>
         </div>
     </div>
-    <a href="/">Voltar</a>
+    <a href="/" class="btn btn-primary">Voltar</a>
 </body>
