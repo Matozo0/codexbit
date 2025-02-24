@@ -16,7 +16,7 @@
                     const code = pre.querySelector("code").innerText;
                     navigator.clipboard.writeText(code).then(() => {
                         button.textContent = "Copiado!";
-                        button.classList.replace("bi-clipboard", "bi-check")
+                        button.classList.replace("bi-clipboard", "bi-clipboard-check")
                         setTimeout(() => button.textContent = "Copiar", 2000);
                     }).catch(err => console.error("Erro ao copiar: ", err));
                 });
@@ -24,7 +24,30 @@
                 pre.style.position = "relative";
                 pre.appendChild(button);
             });
-    using CodexBit.Services;
+
+            const navbarList = document.getElementById("nav-links");
+            const sections = document.querySelectorAll(".post-content h2");
+            const body = document.body;
+
+            sections.forEach((section, index) => {
+                const id = "section-" + index;
+                section.id = id;
+
+                const li = document.createElement("li");
+                li.classList.add("nav-item");
+
+                const link = document.createElement("a");
+                link.classList.add("nav-link");
+                link.href = "#" + id;
+                link.textContent = section.textContent;
+
+                li.appendChild(link);
+                navbarList.appendChild(li);
+            });
+
+            new bootstrap.ScrollSpy(document.body, {
+                target: '#scrollspy-navbar'
+            });
         });
     </script>
     <style>
@@ -43,6 +66,20 @@
             background-color: lightgray;
             padding: 10px;
         }
+
+        .nav-item {
+            margin-bottom: 10px;
+            border: 1px solid #ccc !important;
+            border-radius: 10px;
+        }
+
+        @@media (max-width: 767.98px) {
+            #scrollspy-navbar {
+                position: static !important;
+                /* ou relative */
+                top: auto !important;
+            }
+        }
     </style>
 </head>
 
@@ -50,12 +87,21 @@
     <div class="align-items-center pb-3 mt-3 mb-3 border-bottom">
         <h1>@Model.Post.Title</h1>
 
-        <p><i>Atualizado em: @Model.Post.UpdatedAt - @CodexBit.Services.TimeHelperService.TimeAgo(Model.Post.UpdatedAt)</i></p>
+        <p><i>Atualizado em: @Model.Post.UpdatedAt -
+                @CodexBit.Services.TimeHelperService.TimeAgo(Model.Post.UpdatedAt)</i></p>
     </div>
 
-    <div class="row mb-2">
-        <div class="col-9 border-end pe-4 border-end">
-            <div class="post-content">
+    <div class="row">
+        <div class="col-12 col-md-3 order-1 order-md-2">
+            <nav id="scrollspy-navbar" class="navbar flex-column align-items-stretch sticky-top" style="top: 1rem;">
+                <ul id="nav-links" class="nav nav-pills flex-column">
+                </ul>
+            </nav>
+        </div>
+
+        <div class="col-12 col-md-9 order-2 order-md-1 border-end pe-4">
+            <div class="post-content" data-bs-spy="scroll" data-bs-target="#scrollspy-navbar"
+                data-bs-smooth-scroll="true" tabindex="0">
                 @Html.Raw(Markdown.ToHtml(Model.Post.ContentMarkdown))
             </div>
         </div>
