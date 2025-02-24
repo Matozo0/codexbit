@@ -28,6 +28,5 @@ public class CommentModel
     public int PostId { get; set; }
 
     // Objeto Post que obtém o post
-    [Required]
     public PostModel Post { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿@using Markdig
-@model CodexBit.Models.PostModel
+@model CodexBit.Models.DetailsViewModel
 @{
-    ViewData["Title"] = @Model.Title;
+    ViewData["Title"] = @Model.Post.Title;
 }
 
 <head>
@@ -47,42 +47,80 @@
 
 <body>
     <div class="align-items-center pb-3 mt-3 mb-3 border-bottom">
-        <h1>@Model.Title</h1>
-        
-        <p><i>Atualizado em: @Model.UpdatedAt -
-                @{
-                    var timeDiff = DateTime.UtcNow - Model.UpdatedAt;
-                    var hoursAgo = (int)timeDiff.TotalHours;
-                    var daysAgo = (int)timeDiff.TotalDays;
-                    var minutesAgo = (int)timeDiff.TotalMinutes;
-                    string timeString;
+        <h1>@Model.Post.Title</h1>
 
-                    if (daysAgo > 0)
-                    {
-                        timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
-                    }
-                    else if (hoursAgo > 0)
-                    {
-                        timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
-                    }
-                    else if (minutesAgo > 5)
-                    {
-                        timeString = $"Há {minutesAgo} minutos";
-                    }
-                    else
-                    {
-                        timeString = "Agora mesmo";
-                    }
-                }
+        <p><i>Atualizado em: @Model.Post.UpdatedAt -
+
             </i></p>
     </div>
 
     <div class="row mb-2">
         <div class="col-9 border-end pe-4 border-end">
             <div class="post-content">
-                @Html.Raw(Markdown.ToHtml(Model.ContentMarkdown))
+                @Html.Raw(Markdown.ToHtml(Model.Post.ContentMarkdown))
             </div>
         </div>
+    </div>
+
+    <div class="comments pb-3 m-3 border-top">
+        <h5 class="mt-4">Adicionar um novo comentário</h5>
+
+        <form asp-action="CreateComment" method="post" class="row">
+            <input type="hidden" name="PostId" value="@Model.Post.Id" />
+
+            <div class="col mb-3">
+                <label for="Username" class="form-label">Nome</label>
+                <input id="Username" name="Username" class="form-control" required />
+            </div>
+
+            <div class="col mb-3">
+                <label for="Content" class="form-label">Comentário</label>
+                <textarea id="Content" name="Content" class="form-control" required></textarea>
+            </div>
+
+            <div class="col align-content-center">
+                <button type="submit" class="btn btn-primary">Comentar</button>
+            </div>
+        </form>
+
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="comment row mb-4" id="@comment.Id">
+                <div class="d-flex align-items-center gap-1">
+                    <p class="mb-1 ">@comment.Username -</p>
+                    <p class="mb-1 text-secondary">
+                        @{
+                            var timeDiff = DateTime.UtcNow - comment.CreatedAt;
+                            var hoursAgo = (int)timeDiff.TotalHours;
+                            var daysAgo = (int)timeDiff.TotalDays;
+                            var minutesAgo = (int)timeDiff.TotalMinutes;
+                            string timeString;
+
+                            if (daysAgo > 0)
+                            {
+                                timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
+                            }
+                            else if (hoursAgo > 0)
+                            {
+                                timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
+                            }
+                            else if (minutesAgo > 5)
+                            {
+                                timeString = $"Há {minutesAgo} minutos";
+                            }
+                            else
+                            {
+                                timeString = "Agora mesmo";
+                            }
+                        }
+                        @timeString
+                    </p>
+                </div>
+                <div class="border rounded-pill p-2">
+                    @comment.Content
+                </div>
+            </div>
+        }
     </div>
     <a href="/" class="btn btn-primary">Voltar</a>
 </body>

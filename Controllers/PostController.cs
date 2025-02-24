@@ -22,7 +22,7 @@ public class PostController : Controller
     // Página inicial
     [HttpGet("")]
     public IActionResult Index()
-    {   
+    {
         // Pega todos os posts em ordem do mais recente
         var posts = _context.Posts
             .OrderByDescending(post => post.UpdatedAt)
@@ -33,7 +33,7 @@ public class PostController : Controller
     // Post id
     [HttpGet("{id?}")]
     public IActionResult Details(int id)
-    {   
+    {
         // Pega o post com id fornecido
         var post = _context.Posts
             .FirstOrDefault(post => post.Id == id);
@@ -42,7 +42,19 @@ public class PostController : Controller
         if (post == null)
             return NotFound();
 
-        return View(post);
+        var comments = _context.Comments
+            .Where(comment => comment.PostId == post.Id)
+            .OrderByDescending(comment => comment.CreatedAt)
+            .ToList();
+
+        var viewModel = new DetailsViewModel
+        {
+            Post = post,
+            Comments = comments,
+            NewComment = new CommentModel()
+        };
+
+        return View(viewModel);
     }
 
     // Pagina de criação do post
@@ -63,10 +75,35 @@ public class PostController : Controller
 
         post.UpdatedAt = post.CreatedAt;
 
-        _context.Add(post);
+        _context.Posts.Add(post);
         _context.SaveChanges();
         _logger.LogInformation($"Novo post de id: {post.Id} criado");
 
         return RedirectToAction("Index");
     }
+
+    [HttpPost("create-comment")]
+    public IActionResult CreateComment(CommentCreateDTO commentVm)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var post = _context.Posts.FirstOrDefault(p => p.Id == commentVm.PostId);
+        if (post == null)
+            return NotFound("O post especificado não existe.");
+
+        var comment = new CommentModel
+        {
+            Username = commentVm.Username,
+            Content = commentVm.Content,
+            PostId = commentVm.PostId,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _context.Comments.Add(comment);
+        _context.SaveChanges();
+
+        return RedirectToAction("Details", new { id = commentVm.PostId });
+    }
+
 }
