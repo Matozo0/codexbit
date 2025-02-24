@@ -24,6 +24,7 @@
                 pre.style.position = "relative";
                 pre.appendChild(button);
             });
+    using CodexBit.Services;
         });
     </script>
     <style>
@@ -49,9 +50,7 @@
     <div class="align-items-center pb-3 mt-3 mb-3 border-bottom">
         <h1>@Model.Post.Title</h1>
 
-        <p><i>Atualizado em: @Model.Post.UpdatedAt -
-
-            </i></p>
+        <p><i>Atualizado em: @Model.Post.UpdatedAt - @CodexBit.Services.TimeHelperService.TimeAgo(Model.Post.UpdatedAt)</i></p>
     </div>
 
     <div class="row mb-2">
@@ -89,31 +88,7 @@
                 <div class="d-flex align-items-center gap-1">
                     <p class="mb-1 ">@comment.Username -</p>
                     <p class="mb-1 text-secondary">
-                        @{
-                            var timeDiff = DateTime.UtcNow - comment.CreatedAt;
-                            var hoursAgo = (int)timeDiff.TotalHours;
-                            var daysAgo = (int)timeDiff.TotalDays;
-                            var minutesAgo = (int)timeDiff.TotalMinutes;
-                            string timeString;
-
-                            if (daysAgo > 0)
-                            {
-                                timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
-                            }
-                            else if (hoursAgo > 0)
-                            {
-                                timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
-                            }
-                            else if (minutesAgo > 5)
-                            {
-                                timeString = $"Há {minutesAgo} minutos";
-                            }
-                            else
-                            {
-                                timeString = "Agora mesmo";
-                            }
-                        }
-                        @timeString
+                        @CodexBit.Services.TimeHelperService.TimeAgo(comment.CreatedAt)
                     </p>
                 </div>
                 <div class="border rounded-pill p-2">

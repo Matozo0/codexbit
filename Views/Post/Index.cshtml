@@ -19,6 +19,7 @@
         .post-image {
             border-radius: 8px;
             box-shadow: rgba(0, 0, 0, 0.22) 0px 5px 5px;
+    using CodexBit.Services;
         }
     </style>
 </head>
@@ -40,31 +41,7 @@
                     </div>
 
                     <div class="text-muted mb-3">
-                        @{
-                            var timeDiff = DateTime.UtcNow - post.UpdatedAt;
-                            var hoursAgo = (int)timeDiff.TotalHours;
-                            var daysAgo = (int)timeDiff.TotalDays;
-                            var minutesAgo = (int)timeDiff.TotalMinutes;
-
-                            string timeString;
-                            if (daysAgo > 0)
-                            {
-                                timeString = $"Há {daysAgo} dia{(daysAgo > 1 ? "s" : "")}";
-                            }
-                            else if (hoursAgo > 0)
-                            {
-                                timeString = $"Há {hoursAgo} hora{(hoursAgo > 1 ? "s" : "")}";
-                            }
-                            else if (minutesAgo > 5)
-                            {
-                                timeString = $"Há {minutesAgo} minutos";
-                            }
-                            else
-                            {
-                                timeString = "Agora mesmo";
-                            }
-                        }
-                        @timeString
+                        @CodexBit.Services.TimeHelperService.TimeAgo(post.CreatedAt)
                     </div>
 
                     <p class="text-secondary">@post.Description</p>
