@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = @User.Identity.Name;
+}
+@model CodexBit.Models.UserModel
+
+<body>
+    <div class="d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mb-3"
+            style="width: 64px; height: 64px">
+            <span class="fs-3">@Model.UserName[0]</span>
+        </div>
+        <div class="text-center">
+            <h1 class="fs-3 fw-bold mb-0">@User.Identity.Name</h1>
+            <p class="text-muted mb-0">Membro desde: @Model.CreatedAt.ToShortDateString()</p>
+        </div>
+    </div>
+    <div class="container py-4">
+        <div class="p-4 shadow rounded mb-4 --bs-body-color">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <p class="fs-3 fw-bold text-primary mb-0">0</p>
+                        <p class="text-muted">Posts Publicados</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="fs-3 fw-bold text-primary mb-0">
+                            0
+                        </p>
+                        <p class="text-muted">Comentários Feitos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="fs-4 fw-bold mb-3">Meus Posts</h2>
+    </div>
+    <a href="/" class="btn btn-primary">Voltar</a>
+</body>

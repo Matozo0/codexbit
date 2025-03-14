@@ -12,7 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 </head>
 
 <body>
@@ -23,8 +24,40 @@
             <a class="blog-header-logo text-body-emphasis text-decoration-none" asp-area="" asp-controller="Post"
                 asp-action="Index">C0dexB1t</a>
         </div>
-        <div class="col">
-            <a href="create" class="btn btn-primary">Criar post</a>
+        <div class="col d-flex text-center align-items-center justify-content-center">
+            <div class="dropdown">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    var user = await UserManager.GetUserAsync(User);
+                    <button class="btn btn-secondary dropdown-toggle d-block shadow" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        @user.UserName
+                        <i class="bi bi-person-circle"></i>                        
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end p-2">
+                        <li><a class="dropdown-item d-flex gap-2 align-items-center" href="/account/profile" role="button">
+                            <i class="bi bi-person-lines-fill"></i>
+                            Perfil</a></li>
+                        <li><a class="dropdown-item d-flex gap-2 align-items-center" href="/create" role="button">
+                            <i class="bi bi-file-earmark-plus-fill"></i>
+                            Criar Post</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form action="account/logout" method="post">
+                                <button type="submit" class="dropdown-item dropdown-item-danger d-flex gap-2 align-items-center">
+                                    <i class="bi bi-box-arrow-left"></i>
+                                    Sair</button>
+                            </form>
+                        </li>
+                    </ul>
+
+                    
+                }
+                else
+                {
+                    <a href="/account/login" class="btn btn-outline-primary d-flex gap-2 align-items-center" role="button">Entrar</a>                      
+                }
+            </div>
         </div>
     </header>
 

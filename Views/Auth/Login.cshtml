@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+@model CodexBit.Models.LoginViewModel
+
+<body>
+    <div class="p-4 shadow rounded position-absolute top-50 start-50 translate-middle --bs-body-color" style="width: 100%; max-width: 400px;">
+        <div class="mb-3">
+            <h1 class="fw-bold mb-0 fs-2">Login</h1>
+        </div>
+        <form asp-action="Login" method="post" class="needs-validation" novalidate>
+            <div class="form-floating mb-3">                
+                <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email"
+                    placeholder="Digite o email" required />
+                <label for="Email" class="form-label">Email</label>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque o email.</div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="Password" name="Password" value="@Model.Password"
+                    placeholder="Digite a senha" required />
+                <label for="Password" class="form-label">Senha</label>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque a senha.</div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            </div>
+        </form>
+        <div class="mt-3">
+            <p>Não possui conta? <a href="/account/register"> Crie aqui</a></p>            
+        </div>
+    </div>
+</body>

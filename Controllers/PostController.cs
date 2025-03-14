@@ -5,15 +5,16 @@ using CodexBit.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Sqlite.Diagnostics.Internal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CodexBit.Controllers;
 
 public class PostController : Controller
 {
     private readonly ILogger<PostController> _logger;
-    private readonly BlogContext _context;
+    private readonly AppDBContext _context;
 
-    public PostController(ILogger<PostController> logger, BlogContext context)
+    public PostController(ILogger<PostController> logger, AppDBContext context)
     {
         _logger = logger;
         _context = context;
@@ -21,74 +22,49 @@ public class PostController : Controller
 
     // Página inicial
     [HttpGet("")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         // Pega todos os posts em ordem do mais recente
-        var posts = _context.Posts
+        var posts = await _context.Posts
             .OrderByDescending(post => post.UpdatedAt)
-            .ToList();
+            .AsNoTracking()
+            .ToListAsync();
         return View(posts);
     }
 
     // Post id
     [HttpGet("{id?}")]
-    public IActionResult Details(int id)
+    public async Task<IActionResult> Details(int id)
     {
         // Pega o post com id fornecido
-        var post = _context.Posts
-            .FirstOrDefault(post => post.Id == id);
+        var post = await _context.Posts
+            .Include(post => post.Comments) // Carrega os comentários numa só consulta
+            .FirstOrDefaultAsync(post => post.Id == id);
 
         // Caso não exista o post retorna NotFound
         if (post == null)
             return NotFound();
 
-        var comments = _context.Comments
-            .Where(comment => comment.PostId == post.Id)
-            .OrderByDescending(comment => comment.CreatedAt)
-            .ToList();
-
         var viewModel = new DetailsViewModel
         {
             Post = post,
-            Comments = comments,
+            Comments = post.Comments.OrderByDescending(comment => comment.CreatedAt).ToList(),
             NewComment = new CommentModel()
         };
 
         return View(viewModel);
     }
 
-    // Pagina de criação do post
-    [HttpGet("create")]
-    public IActionResult Create()
-    {
-        return View(new PostModel());
-    }
-
-    // Endpoint do formulário de criação do post
-    [HttpPost("create")]
-    public IActionResult Create(PostModel post)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest();
-        }
-
-        post.UpdatedAt = post.CreatedAt;
-
-        _context.Posts.Add(post);
-        _context.SaveChanges();
-        _logger.LogInformation($"Novo post de id: {post.Id} criado");
-
-        return RedirectToAction("Index");
-    }
-
+    [Authorize]
     [HttpPost("create-comment")]
-    public IActionResult CreateComment(CommentCreateDTO commentVm)
+    public async Task<IActionResult> CreateComment(CommentCreateDTO commentVm)
     {
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var post = _context.Posts.FirstOrDefault(p => p.Id == commentVm.PostId);
+        var post = await _context.Posts
+            .FirstOrDefaultAsync(p => p.Id == commentVm.PostId);
+
         if (post == null)
             return NotFound("O post especificado não existe.");
 
@@ -100,10 +76,36 @@ public class PostController : Controller
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.Comments.Add(comment);
-        _context.SaveChanges();
+        await _context.Comments.AddAsync(comment);
+        await _context.SaveChangesAsync();
 
         return RedirectToAction("Details", new { id = commentVm.PostId });
     }
 
+    // Pagina de criação do post
+    [Authorize]
+    [HttpGet("create")]
+    public IActionResult Create()
+    {
+        return View(new PostModel());
+    }
+
+    // Endpoint do formulário de criação do post
+    [Authorize]
+    [HttpPost("create")]
+    public async Task<IActionResult> Create(PostModel post)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest();
+        }
+
+        post.UpdatedAt = post.CreatedAt;
+
+        await _context.Posts.AddAsync(post);
+        await _context.SaveChangesAsync();
+        _logger.LogInformation($"Novo post de id: {post.Id} criado");
+
+        return RedirectToAction("Index");
+    }
 }

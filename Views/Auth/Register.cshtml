@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Registro";
+}
+@model CodexBit.Models.RegisterViewModel
+
+<body>
+    <div class="p-4 shadow rounded position-absolute top-50 start-50 translate-middle --bs-body-color" style="width: 100%; max-width: 400px;">
+        <div class="mb-3">
+            <h1 class="fw-bold mb-0 fs-2">Registrar gratuitamente</h1>
+        </div>
+        <form asp-action="Register" method="post" class="needs-validation" novalidate>
+            <div class="form-floating mb-3">  
+                <input type="text" class="form-control" id="Username" name="Username" value="@Model.Username"
+                    placeholder="Digite o nome de usuário" required />
+                <label for="Username">Nome de usuário</label>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque o nome de usuário.</div>
+            </div>
+
+            <div class="form-floating mb-3">  
+                <input type="text" class="form-control" id="Email" name="Email" value="@Model.Email"
+                    placeholder="Digite o email" required />
+                <label for="Email">Email</label>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque o email.</div>
+            </div>
+
+            <div class="form-floating mb-3">                 
+                <input type="text" class="form-control" id="Password" name="Password" value="@Model.Password"
+                    placeholder="Digite a senha" required />
+                <label for="Password">Senha</label>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque a senha.</div>
+            </div>
+
+            <div class="form-floating mb-3">  
+                <input type="text" class="form-control" id="ConfirmPassword" name="ConfirmPassword"
+                    value="@Model.ConfirmPassword" placeholder="Digite a senha novamente" required />
+                <label for="ConfirmPassword">Repita a senha</label>
+                <div class="valid-feedback">Válido.</div>
+                <div class="invalid-feedback">Por favor coloque a senha novamente.</div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </div>
+        </form>
+        <div class="mt-3">
+            <p>Já possui conta? <a href="/account/login"> Entre aqui</a></p>            
+        </div>
+    </div>
+</body>
